@@ -21,13 +21,16 @@
 
 	<header class="info">
 		<h1 class="close close-top">CLOSE</h1>
-	<p>DANIEL BARAGWANATH<br>[B.92*] is a London based Designer,<br>Art Director and Front End Developer.</p>
+		<div class="text">
+			<p>DANIEL BARAGWANATH</p>
+			<p>[B.92] is a London based Designer,<br>Art Director and Front End Developer. </p>
+			<p class="sub">*Narration: An anecdote by Major Brian Shul about his time as an <a href="https://militarymachine.com/wp-content/uploads/2018/08/SR-71-15-courtesy-of-NASA.jpg" target="_blank">SR-71 ‘Blackbird’</a> pilot in the US Air Force.</p>
+		</div>
+
+	</p>
+
 		<h1 class="close close-bottom">CLOSE</h1>
 	</header>
-
-	<div class="preloader">
-		<p>LOADING...</p>
-	</div>
 
 	<body>
 
@@ -68,8 +71,8 @@
 		<div class="button button-left button-top" id="infoButton">
 			<h1>INFO</h1>
 		</div>
-		<div class="button button-left button-bottom">
-			<h1 id="time"></h1>
+		<div class="button button-left button-bottom" id="sound">
+			<h1>SOUND ON</h1>
 		</div>
 		<a class="button button-right button-top"
 			 href="mailto:daniel@bara.global" target="_blank">
@@ -80,29 +83,49 @@
 				<h1>INSTA</h1>
 		</a>
 
-		<video  autoplay muted loop class="video" poster="images/Poster.jpg">
-    	<source src="images/Flight1.mp4" type="video/mp4">
-		</video>
-
-		<div class="mob-video">
-
-		</div>
+		
+		<audio id="track">
+		  <source src="LA_Speed_check.mp3" type="audio/mpeg">
+		</audio>
 
 		<script src="http://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
 		<script src="scripts/jquery-3.1.0.min.js"></script>
 		<script src="scripts/vendor.js"></script>
-		<script src="scripts/script.js"></script>
+		<script src="scripts/three.min.js"></script>
+		<script id="vs" type="x-shader/x-vertex">
 
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-90419689-2"></script>
-		<script>
-		  window.dataLayer = window.dataLayer || [];
-		  function gtag(){dataLayer.push(arguments);}
-		  gtag('js', new Date());
+			varying vec2 vUv;
 
-		  gtag('config', 'UA-90419689-2');
+			void main() {
+
+				vUv = uv;
+				gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+			}
+
 		</script>
+		<script id="fs" type="x-shader/x-fragment">
 
+			uniform sampler2D map;
 
+			uniform vec3 fogColor;
+			uniform float fogNear;
+			uniform float fogFar;
+
+			varying vec2 vUv;
+
+			void main() {
+
+				float depth = gl_FragCoord.z / gl_FragCoord.w;
+				float fogFactor = smoothstep( fogNear, fogFar, depth );
+
+				gl_FragColor = texture2D( map, vUv );
+				gl_FragColor.w *= pow( gl_FragCoord.z, 20.0 );
+				gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );
+
+			}
+
+		</script>
+		<script src="scripts/script.js"></script>
 	</body>
 </html>
