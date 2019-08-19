@@ -61,7 +61,9 @@ table {
   border-spacing: 0; }
 
 html, body {
-  font-family: 'Cutive Mono', monospace; }
+  font-family: 'Cutive Mono', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;}
 
 a {
   text-decoration: none;
